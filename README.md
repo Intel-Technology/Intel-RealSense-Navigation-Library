@@ -10,7 +10,7 @@ Library aimed at assisting and easing integration or RealSense Gesture and voice
 -	Gestures to interact with hyperlinks and other page elements
 
 **Dependencies:**
--	DCM version 1.2.14.24922 
+-	[DCM version 1.2.14.24922](http://registrationcenter-download.intel.com/akdlm/irc_nas/5105/intel_rs_dcm_f200_1.2.14.24922.exe)
 -	SDK Runtime version 5.0.3.191742
 -	Note: This is based on early versions of the RealSense for Web, and may subject to change before final release. 
 
