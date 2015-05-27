@@ -2,7 +2,7 @@
 <!-- saved from url=(0025)http://illumin8games.com/ -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <script src="./JS/promise-1.0.0.min.js"></script>
-<script src="./JS/jquery-1.11.0.min.js"></script> 
+<script src="./JS/jquery-1.11.0.min.js"></script>
 <script src="./JS/realsense.js"></script>
 <script src="./JS/realsensebase.js"></script>
 <script src="./JS/realsenseinfo.js"></script>
@@ -46,7 +46,7 @@ ol {
 <script>
 $(document).ready(function () {
   self.supported();
-  self.CompatibilityCheck();   
+  self.CompatibilityCheck();
 });
 
   self.CompatibilityCheck = function(){
@@ -73,13 +73,13 @@ $(document).ready(function () {
 	  }
     })
   };
-  
+
   //Check to see if we are on the target platform. This can be modified to support a wider range
-  //but please ensure that you validate on the target browsers before shipping. 
-  self.supported = function (){ 
+  //but please ensure that you validate on the target browsers before shipping.
+  self.supported = function (){
     UpdateText("Checking  Platform");
     //check if we are on a Windows platform
-	if(check(/windows|win32/)){	  
+	if(check(/windows|win32/)){
 	  //Check if browser is Internet explorer 11 or above
 	  if (navigator.userAgent.indexOf('Trident') >= 0 && navigator.userAgent.indexOf('MSIE') == -1) {
 	    alert('Browser is IE');
@@ -90,14 +90,14 @@ $(document).ready(function () {
 	  }
 	  //Check if browser is Firefox
 	  else if (navigator.userAgent.search("Firefox") >= 0) {
-	    alert("Browser is FireFox");
+	    alert("Browser is Firefox");
 	  }
 	  else {
 	    alert('Please update/install and re-run the sample on a supported browser');
 	  }
-	} 
+	}
   };
-  
+
   self.preparerealsenseexperience = function (){
 	var navigator = new IntelRealSense.Navigator();
     var content = document.getElementById('content');
@@ -107,15 +107,15 @@ $(document).ready(function () {
     navigator.init();
     navigator.startNavigation();
   }
-  
+
   //**helper functions**//
-  
+
   // Check user agent string
   var ua = navigator.userAgent.toLowerCase();
   var check = function(r) {
       return r.test(ua);
   };
-  
+
   //get and update text by id
   function UpdateText(fieldName) {
     var fieldNameElement = document.getElementById("field_name");
@@ -127,16 +127,13 @@ $(document).ready(function () {
 </script>
 </head>
 <body>
-  <video class="intel-realsense" id="testvideo" width="568" height="320" controls="">
-      <source src="video/RealSense.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-  </video>
+
     <div id="field_name">Checking  Compatibility.</div>
     <h1>Intel&#174 RealSense&#8482 Navigation Sample</h1>
 <div id="content">
     <h1>About the library</h1>
-    <p>This sample demonstrates the use of Intel&#174 RealSense&#8482 Navigation library, which is a simple interface to the Intel&#174 RealSense&#8482 SDK for Web. 
-        Out of the box the library provides the ability to easily integrate an end-to-end solution for gesture and voice recognition in your web page. 
+    <p>This sample demonstrates the use of Intel&#174 RealSense&#8482 Navigation library, which is a simple interface to the Intel&#174 RealSense&#8482 SDK for Web.
+        Out of the box the library provides the ability to easily integrate an end-to-end solution for gesture and voice recognition in your web page.
         The library also allows you to subscribe to speech and gesture events, to further customize and tailor the experience to your application.
         The following is what you will learn from this sample:</p>
 
@@ -152,26 +149,26 @@ $(document).ready(function () {
         </ul>
     </div>
 
-     Check out the Intel&#174 <a href="https://software.intel.com/en-us/realsense/home" id="A1" class="intel-realsense">Developer Zone</a> to find out more about RealSense&#8482 and offerings.  
-   
-    
-    
+     Check out the Intel&#174 <a href="https://software.intel.com/en-us/realsense/home" id="A1" class="intel-realsense">Developer Zone</a> to find out more about RealSense&#8482 and offerings.
+
+
+
     <h2>Code Breakdown</h2>
 
     <p>
         To prepare for the RealSense experience, we must ensure that the browser trying to run is supported. In the following listing we determine if the browser is one of three supported.
-        WE look for Chrome, Firefox and Internet explorer (version 11 and up). If the browser is neither of these we do not initialize or do any further checking. At this point 
+        WE look for Chrome, Firefox and Internet explorer (version 11 and up). If the browser is neither of these we do not initialize or do any further checking. At this point
         the application should fallback to the traditional mouse and keyboard functionality. Note the browser check can be modified to support a wider range (Opera for example is supported)
-        since the user agent string includes chrome, but please ensure that you validate the browsers you intend to support before shipping. 
+        since the user agent string includes chrome, but please ensure that you validate the browsers you intend to support before shipping.
     </p>
 
     <pre><code>
     //Check to see if we are on the target platform. This can be modified to support a wider range
-    //but please ensure that you validate on the target browsers before shipping. 
-    self.supported = function (){ 
+    //but please ensure that you validate on the target browsers before shipping.
+    self.supported = function (){
       UpdateText("Checking  Platform");
       //check if we are on a Windows platform
-      if(check(/windows|win32/)){	  
+      if(check(/windows|win32/)){
         //Check if browser is Internet explorer 11 or above
         if (navigator.userAgent.indexOf('Trident') >= 0 && navigator.userAgent.indexOf('MSIE') == -1) {
           alert('Browser is IE');
@@ -187,9 +184,9 @@ $(document).ready(function () {
         else {
           alert('Please update/install and re-run the sample on a supported browser');
         }
-      } 
+      }
     };
-    </code></pre>   
+    </code></pre>
 
 
 
@@ -230,11 +227,11 @@ $(document).ready(function () {
       })
     };
     </code></pre>
-  
+
     <p>
         Once the check has completed successfully, we can initialize RealSense navigation and RealSense engine. In the following listing we first create an instance of the navigation library and a reference to the content object.
-        We then add a user defined element and it's callback for the given event, in this case the tap gesture event. We then add a user defined list of commands (can be a specific command or phrase) to be accepted and a callback. 
-        Note the scrolling via hand position is default functionality and is available out of the box. Lastly, we initialize the navigation library, which in turn creates the navigation elements for scrolling and initializes the gesture and 
+        We then add a user defined element and it's callback for the given event, in this case the tap gesture event. We then add a user defined list of commands (can be a specific command or phrase) to be accepted and a callback.
+        Note the scrolling via hand position is default functionality and is available out of the box. Lastly, we initialize the navigation library, which in turn creates the navigation elements for scrolling and initializes the gesture and
         speech modules of the RealSense SDK. Then we begin by starting the navigation, which is used for visualization of the hand position and scroll direction indicators.
     </p>
 
@@ -252,7 +249,7 @@ $(document).ready(function () {
 
     <p>
         Thanks for trying the RealSense Navigation Library. We hope to see the community help contribute to this Open Source project. Please feel free to fork the <a href="https://github.com/Intel-Technology/Intel-RealSense-Navigation-Library" id="A2" class="intel-realsense">Intel&#174  RealSense&#8482 Navigation Library</a> project on Github.
-    
+
         A quick note on the Intel Privacy Policy: We require that anytime the camera and microphone is used to capture user data, they ne informed of the action, via a notification pop-up.
     </p>
 
