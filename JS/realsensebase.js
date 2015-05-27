@@ -126,7 +126,7 @@ ITAWSConnection = function(endpoint, options, listeners){
             }
             // set wrappers for ws events that call user listeners
             self.wrapEvents();
-            
+
             if (options.autoConnect !== false) {
                 self.ws.open();
             }
@@ -145,7 +145,7 @@ ITAWSConnection = function(endpoint, options, listeners){
             throw 'Access Token is required';
         }
     }
-    
+
 };
 // TODO this should be passing in a wamp lib adapter, not hardcoded
 /**
@@ -295,7 +295,7 @@ function getRAT(accessToken, cb){
         },
         "body": JSON.stringify(at)
     };
-    
+
     var successCallback = function(result){
         var rat;
         if (result.responseText) {
@@ -324,13 +324,13 @@ intel.rest = function (method, url, options) {
      Dynamically builds the URL string, replacing url tokens with provided values and appending any provided query parameters.
      @method intel.rest._buildUrl
      @param {string} url - Base URL to attempt token replacement and append query params to.
-     @param {object} options - Dynamic options for this request. Structure is identical to top level options passed to intel.rest, 
+     @param {object} options - Dynamic options for this request. Structure is identical to top level options passed to intel.rest,
                                 however, only url and query properties are used in this function.
      */
     function _buildUrl(url, options){
         // Dynamic URL key replacements.
         if (options.url) {
-            for(var okey in options.url) { 
+            for(var okey in options.url) {
                 if (options.url.hasOwnProperty(okey)) {
                     url = url.replace("{" + okey + "}", options.url[okey]);
                 }
@@ -340,7 +340,7 @@ intel.rest = function (method, url, options) {
         // Attach query string.
         if (options.query) {
             var queryArray = [];
-            for(var qkey in options.query) { 
+            for(var qkey in options.query) {
                 if (options.query.hasOwnProperty(qkey)) {
                     queryArray.push(encodeURI(qkey) + "=" + encodeURI(options.query[qkey]));
                 }
@@ -360,12 +360,12 @@ intel.rest = function (method, url, options) {
     self.headers            = options.headers || {};
     self.request            = null;
     self.timeout            = options.timeout || -1;
-    
+
     //Set JSON as default dataType
     if (!("Accept" in self.headers)) {
         self.headers["Accept"] = "application/json";
     }
-    
+
     //Set Default Content-Type
     if (!("Content-Type" in self.headers) && self.method !== 'GET') {
         self.headers["Content-type"] = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -408,13 +408,13 @@ intel.rest = function (method, url, options) {
 
             // Set the request headers.
             if (self.headers) {
-                for(var index in self.headers) { 
+                for(var index in self.headers) {
                     if (self.headers.hasOwnProperty(index)) {
                         xhr.setRequestHeader(index, self.headers[index]);
                     }
                 }
             }
-            
+
             // Set request timeout.
             if (self.timeout > 0) {
                 xhr.timeout = self.timeout;
@@ -433,7 +433,7 @@ intel.rest = function (method, url, options) {
             errorCB(e);
         }
     };
-	
+
     return self;
 };
 
@@ -445,7 +445,7 @@ GetResourceAccessToken = function(options, successCB, errorCB) {
 
 
 function RealSenseConnection() {
-    // this.socketUrl  = 'ws://localhost:4184'; 
+    // this.socketUrl  = 'ws://localhost:4184';
     console.log('Realsense.Connection()');
     var self = this;
     var noop = function () { };
@@ -489,7 +489,7 @@ function RealSenseConnection() {
         request.id = ++this.request_id;
         request.instance = { value: instance };
         request.method = method;
-        request.version_major = 'v' + RealSenseVersion_Major; 
+        request.version_major = 'v' + RealSenseVersion_Major;
 
         // Convert request to JSON string
         var request_text = JSON.stringify(request);
@@ -515,7 +515,7 @@ function RealSenseConnection() {
             } else {
                 this.reject({ 'error': 'request timeout on method ' + request.method });
             }
-        } 
+        }
         if (this.websocket.session) {
             request.reject({ 'error': 'error opening websocket' });
         } else {
@@ -531,16 +531,16 @@ function RealSenseConnection() {
     this._onopen = function (session) {
         //self.onopen(session);
         this.wssession = session;
-        
+
         //subscribe to the realsense events
         this.wssession.Subscribe("realsense/rssdk_v5/api", self.queue[i], function(response){var t3 = performance.now(); /*console.log("Response time: "+(t3-t2));*/self._onmessage(response)});
 
         //console.log(self.session);
         for (var i = 0; i < self.queue.length; i++) {
             var t2 = performance.now();
-            this.wssession.SendRPC("realsense/rssdk_v5/api", self.queue[i], function(response){var t3 = performance.now(); console.log("Response time: "+(t3-t2));self._onmessage(response)});
+            this.wssession.SendRPC("realsense/rssdk_v5/api", self.queue[i], function(response){var t3 = performance.now(); /*console.log("Response time: "+(t3-t2));*/self._onmessage(response)});
         }
-        self.queue = []; 
+        self.queue = [];
     }
 
     // Message handler
@@ -574,8 +574,8 @@ function RealSenseConnection() {
             callback(response, obj);
             return;
         } else if (response.id !== 'undefined' && this.request_array[response.id]) { // result from server
-            console.log("Found request id");
-            console.log(response);
+            //console.log("Found request id");
+            //console.log(response);
             // Attach request to response object and remove from array
             response.request = this.request_array[response.id];
             delete this.request_array[response.id];

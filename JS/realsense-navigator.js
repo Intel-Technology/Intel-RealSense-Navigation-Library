@@ -519,6 +519,20 @@ IntelRealSense.Navigator = function (settings) {
     return results;
   })();
 
+  // Polyfill for IE CustomEvent
+  (function () {
+    function CustomEvent ( event, params ) {
+      params = params || { bubbles: false, cancelable: false, detail: undefined };
+      var evt = document.createEvent( 'CustomEvent' );
+      evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+      return evt;
+     }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+  })();
+
   // Add the navigation elements to the body
   var createNavigationElements = function () {
     // canvas
@@ -796,7 +810,7 @@ IntelRealSense.Navigator = function (settings) {
       if(element.classList.contains('intel-realsense')) {
         element.classList.add('intel-realsense-active');
       }
-      var event = createEvent('realsense-hover');
+      var event = createEvent('realsense-hover', screenCoordinates);
       element.dispatchEvent(event);
     } else {
       // Fire the unhover event if needed
@@ -824,12 +838,17 @@ IntelRealSense.Navigator = function (settings) {
   };
 
   // Lets' create events the old way
-  var createEvent = function(name) {
-    // Create the event.
-    var event = document.createEvent('Event');
-    // Define that the event name is 'build'.
-    event.initEvent(name, true, true);
-    return event;
+  var createEvent = function(name, args) {
+    var evt = null;
+    if('CustomEvent' in window) {
+      evt = new CustomEvent(name, { 'detail' : args});
+    } else {
+      // Create the event.
+      evt = document.createEvent('Event');
+      // Initialize event
+      evt.initCustomEvent(name, true, true, args);
+    }
+    return evt;
   };
 
   // Given a class name, returns a real array with the elements
