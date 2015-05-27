@@ -533,7 +533,7 @@ function RealSenseConnection() {
         this.wssession = session;
         
         //subscribe to the realsense events
-        this.wssession.Subscribe("realsense/rssdk_v5/api", self.queue[i], function(response){var t3 = performance.now(); console.log("Response time: "+(t3-t2));self._onmessage(response)});
+        this.wssession.Subscribe("realsense/rssdk_v5/api", self.queue[i], function(response){var t3 = performance.now(); /*console.log("Response time: "+(t3-t2));*/self._onmessage(response)});
 
         //console.log(self.session);
         for (var i = 0; i < self.queue.length; i++) {
@@ -553,9 +553,9 @@ function RealSenseConnection() {
 
         // Parse JSON
         var response;
-        console.log("received a response");
-        console.log(response);
-        console.log("<<");
+        //console.log("received a response");
+        //console.log(response);
+        //console.log("<<");
         try {
             var t0 = performance.now();
             response = JSON.parse(event);
