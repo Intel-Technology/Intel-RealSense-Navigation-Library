@@ -29,9 +29,9 @@ var IntelRealSense = {};
 // as needed.
 IntelRealSense.Gestures = function (options) {
   var self = this;
-  
+
   var supported = false;
-  
+
   var ready = true;
   var lastHandTime = 0;
   var lastHandPositionImage = {};
@@ -63,7 +63,7 @@ IntelRealSense.Gestures = function (options) {
 
   // Should accept input
   var isEngaged = true;
-  
+
   // Tap scrolling flag
   var isPinching = false;
 
@@ -215,16 +215,16 @@ IntelRealSense.Gestures = function (options) {
     if(!joints[0]) return;
 
     setLastHandPosition(joints);
-	
+
 	if(data.hands[0].openness <= 0.75){
 		self.isEngaged = false;
 	}else{
 		self.isEngaged = true;
 	}
-	console.log('isEngaged = ' + self.isEngaged);
-	console.log('openness = ' + data.hands[0].openness.toString()); // is the hand more closed than open...should we stop engagement?
+	//console.log('isEngaged = ' + self.isEngaged);
+	//console.log('openness = ' + data.hands[0].openness.toString()); // is the hand more closed than open...should we stop engagement?
 	//console.log('distance = ' + data.hands[0].trackedJoint[pxcmConst.PXCMHandData.JOINT_CENTER].positionWorld.z.toString()); // distance from camera to stop engagement?
-		
+
     checkHandActivity(Date.now());
     checkFingerTap(0.10);
 
@@ -590,7 +590,7 @@ IntelRealSense.Navigator = function (settings) {
       var modifier = (scrollStart.top - screenCoordinates.y)/10;
       if (modifier > 0) {
         context.save();
-		
+
         var grd = context.createLinearGradient(0, 0, 0, modifier*4);
         grd.addColorStop(0, 'rgba(255, 0, 0, 0.5)');
         grd.addColorStop(1, 'rgba(255, 0, 0, 0.0)');
@@ -610,7 +610,7 @@ IntelRealSense.Navigator = function (settings) {
       var modifier = (screenCoordinates.y - scrollStart.bot) / 10;
       if (modifier > 0) {
         context.save();
-		
+
         var grd = context.createLinearGradient(0, canvas.height, 0, canvas.height  + -modifier*4);
         grd.addColorStop(0, 'rgba(255, 0, 0, 0.5)');
         grd.addColorStop(1, 'rgba(255, 0, 0, 0.0)');
@@ -633,8 +633,8 @@ IntelRealSense.Navigator = function (settings) {
     // Update the green dot to notify of a pinch
     canvas.addEventListener('realsense-pinch', function () {
       updateHandVisual(50, 'rgba(255, 255, 0, 0.4)', 'rgba(255, 255, 0, 0.0)');
-      
-      
+
+
 	  // Start scrolling, need to latch hand position to screen
       isPinching = true;
       firstPinchFrame = true;
@@ -690,7 +690,7 @@ IntelRealSense.Navigator = function (settings) {
 
     }
   };
-  
+
   //Catch page close, refresh case in order to end the session appropriately
   $(window).bind("beforeunload", function (e) {
   if (sense != undefined) {
@@ -707,7 +707,7 @@ IntelRealSense.Navigator = function (settings) {
 // return "Are you sure to leave this page?"; // no return --> no Navigation Confirmation dialog
 })
 
-    
+
   var resizeCanvas = function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -722,7 +722,7 @@ IntelRealSense.Navigator = function (settings) {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  
+
   // Takes the hand coordinates and scales them to screen space
   var getScreenCoordinates = function (position) {
     return { x: (position.x * imageWidthRatio), y: (position.y * imageHeightRatio) };
@@ -783,7 +783,7 @@ IntelRealSense.Navigator = function (settings) {
     }
   };
   */
-  
+
   // Try to fire the hover event if there a collision detected
   var tryFireHover = function (element) {
     //check if hand position is contain inside the dom object rect
@@ -903,8 +903,8 @@ IntelRealSense.Navigator = function (settings) {
   voice.onRecognitionAborted = fireSpeechEvent.bind(null, 'realsense-speech-recognition-aborted');
   voice.onRecognitionEnd = fireSpeechEvent.bind(null, 'realsense-speech-recognition-end');
 
-  
-  
+
+
 
   // Entry point for setup
   self.init = function () {
