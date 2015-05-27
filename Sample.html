@@ -242,6 +242,7 @@ $(document).ready(function () {
       //navigator.addNavigationElement('realsense-tap', content, function() { alert('woohoo'); });
       navigator.addSpeechElement(['hello', 'monkey'], function(word) {alert(word);});
       //navigator.addNavigationElement('realsense-speech-begin', content, function() { alert('you said something'); });
+      navigator.addNavigationElement('realsense-pinch', content, function(event) { console.log('hey!!!') });
       navigator.init();
       navigator.startNavigation();
     }

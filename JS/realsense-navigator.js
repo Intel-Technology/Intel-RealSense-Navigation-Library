@@ -168,7 +168,7 @@ IntelRealSense.Gestures = function (options) {
     {
       isPinching = true;
       pinchStart = index;
-      tryCallback(onPinch, 0);
+      tryCallback(self.onPinch, 0);
     }
   };
 
@@ -180,7 +180,7 @@ IntelRealSense.Gestures = function (options) {
     {
       isPinching = false;
       pinchStart = {};
-      tryCallback(onUnpinch, 0);
+      tryCallback(self.onUnpinch, 0);
     }
   };
 
@@ -227,7 +227,7 @@ IntelRealSense.Gestures = function (options) {
 
     checkHandActivity(Date.now());
     checkFingerTap(0.10);
-
+    checkPinch(0.05);
   };
 
   // Mark us as not ready for gestures, and clear the tracking
@@ -910,6 +910,8 @@ IntelRealSense.Navigator = function (settings) {
   // Callback events to fire on gestures
   gesture.onTap = fireEvent('realsense-tap');
   gesture.onUntap = fireEvent('realsense-untap');
+  gesture.onPinch = fireEvent('realsense-pinch');
+  gesture.onUnpinch = fireEvent('realsense-unpinch');
 
   voice.onScrollUp = fireWindowEvent('realsense-scroll-up');
   voice.onScrollDown = fireWindowEvent('realsense-scroll-down');
