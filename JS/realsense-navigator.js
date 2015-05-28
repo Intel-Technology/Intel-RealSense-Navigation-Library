@@ -98,7 +98,7 @@ IntelRealSense.Gestures = function (options) {
     var y = smoothPosition.y - ((resolutionHeight >> 1) - smoothPosition.y);
 
     // Hand data has reversed x
-    return { x: (resolutionWidth - x), y: y};
+    return { x: (resolutionWidth - x), y: y, z: smoothPosition.z};
   };
 
   // Simple smoothed averaging
@@ -108,11 +108,12 @@ IntelRealSense.Gestures = function (options) {
     {
       newValues.x = lastValues.x + alpha * (lastHandPositionImage.x - lastValues.x);
       newValues.y = lastValues.y + alpha * (lastHandPositionImage.y - lastValues.y);
-      newValues.z = lastValues.z + alpha * (lastHandPositionImage.z - lastValues.z);
+      newValues.z = lastValues.z + alpha * (lastHandPosition[pxcmConst.PXCMHandData.JOINT_CENTER].positionWorld.z - lastValues.z);
     }
     else
     {
       newValues = lastHandPositionImage;
+      newValues.z = lastHandPosition[pxcmConst.PXCMHandData.JOINT_CENTER].positionWorld.z;
     }
     lastValues = newValues;
     return lastValues;
@@ -739,7 +740,7 @@ IntelRealSense.Navigator = function (settings) {
 
   // Takes the hand coordinates and scales them to screen space
   var getScreenCoordinates = function (position) {
-    return { x: (position.x * imageWidthRatio), y: (position.y * imageHeightRatio) };
+    return { x: (position.x * imageWidthRatio), y: (position.y * imageHeightRatio), z: position.z };
   }
 
   var drawPosition = function (position) {
