@@ -102,7 +102,8 @@ $(document).ready(function () {
 	var navigator = new IntelRealSense.Navigator();
     var content = document.getElementById('content');
 
-	navigator.addNavigationElement('realsense-pinch', content, stuff );
+	  //navigator.addNavigationElement('realsense-pinch', content, function(event) { console.log(event.detail) } );
+    navigator.addNavigationElement('realsense-hover', content, function(event) { console.log(event.detail) } );
     //navigator.addNavigationElement('realsense-tap', content, function() { alert('woohoo'); });
     navigator.addSpeechElement(['hello', 'monkey'], function(word) {alert(word);});
     //navigator.addNavigationElement('realsense-speech-begin', content, function() { alert('you said something'); });
@@ -250,6 +251,7 @@ $(document).ready(function () {
       //navigator.addNavigationElement('realsense-tap', content, function() { alert('woohoo'); });
       navigator.addSpeechElement(['hello', 'monkey'], function(word) {alert(word);});
       //navigator.addNavigationElement('realsense-speech-begin', content, function() { alert('you said something'); });
+
       navigator.addNavigationElement('realsense-pinch', content, function(event) { console.log(event.detail) });
       navigator.init();
       navigator.startNavigation();

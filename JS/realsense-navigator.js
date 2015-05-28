@@ -866,7 +866,7 @@ IntelRealSense.Navigator = function (settings) {
     return function () {
       var elements = getElementsArray('intel-realsense-active');
       for (var i = 0; i < elements.length; i++) {
-        var event = createEvent(eventName);
+        var event = createEvent(eventName, screenCoordinates);
         elements[i].dispatchEvent(event);
       }
 
@@ -876,13 +876,13 @@ IntelRealSense.Navigator = function (settings) {
       for (var i = 0; i < elements.length; i++) {
         var rect = elements[i].getBoundingClientRect();
         if (pointRectangleIntersection(screenCoordinates, rect)) {
-          var event = createEvent(eventName);
+          var event = createEvent(eventName, screenCoordinates);
           elements[i].dispatchEvent(event);
         }
       }
 
       // Always send to the canvas, too
-      var event = createEvent(eventName);
+      var event = createEvent(eventName, screenCoordinates);
       canvas.dispatchEvent(event);
 
     }
@@ -891,7 +891,7 @@ IntelRealSense.Navigator = function (settings) {
   // Fire an event to the window
   var fireWindowEvent = function (eventName) {
     return function () {
-      var event = createEvent(eventName);
+      var event = createEvent(eventName, screenCoordinates);
       window.dispatchEvent(event);
     };
   };
