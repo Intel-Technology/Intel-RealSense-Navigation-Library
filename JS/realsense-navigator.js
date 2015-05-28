@@ -693,6 +693,20 @@ IntelRealSense.Navigator = function (settings) {
       this.scrollBy(0, viewportHeight);
     });
 
+    //Catch page close, refresh case in order to end the session appropriately
+    window.addEventListener("beforeunload", function (e) {
+      if (sense != undefined) {
+        sense.Close();
+        sense = undefined;
+      }
+      if (speech_rec != undefined) {
+        speech_rec.StopRec().then(function (result) {
+          speech_rec.Release();
+          speech_rec = undefined;
+        });
+      }
+    });
+
     // Go through user-defined handlers and set those up
     for(var i = 0; i < navigatorEvents.length; ++i) {
       var event = navigatorEvents[i];
@@ -705,23 +719,6 @@ IntelRealSense.Navigator = function (settings) {
 
     }
   };
-
-  //Catch page close, refresh case in order to end the session appropriately
-  $(window).bind("onbeforeunload", function (e) {
-  if (sense != undefined) {
-	sense.Close();
-	setTimeout(function () { }, 2000);
-	sense = undefined;
-  }
-  if (speech_rec != undefined) {
-	speech_rec.StopRec().then(function (result) {
-		speech_rec.Release();
-		speech_rec = undefined;
-	});
-  }
-// return "Are you sure to leave this page?"; // no return --> no Navigation Confirmation dialog
-})
-
 
   var resizeCanvas = function () {
     canvas.width = window.innerWidth;
