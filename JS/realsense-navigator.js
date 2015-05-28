@@ -168,7 +168,7 @@ IntelRealSense.Gestures = function (options) {
     {
       isPinching = true;
       pinchStart = index;
-      tryCallback(self.onPinch, 0);
+      self.tryCallback(self.onPinch, 0);
     }
   };
 
@@ -180,7 +180,7 @@ IntelRealSense.Gestures = function (options) {
     {
       isPinching = false;
       pinchStart = {};
-      tryCallback(self.onUnpinch, 0);
+      self.tryCallback(self.onUnpinch, 0);
     }
   };
 
@@ -253,7 +253,7 @@ IntelRealSense.Gestures = function (options) {
     if (!data.hands) return;
 
     self.detectGestures(data);
-	console.log('speed = ' + data.hands[0].trackedJoint[pxcmConst.PXCMHandData.JOINT_CENTER].speed.z.toString()); // distance from camera to stop engagement?
+	//console.log('speed = ' + data.hands[0].trackedJoint[pxcmConst.PXCMHandData.JOINT_CENTER].speed.z.toString()); // distance from camera to stop engagement?
 
   };
 
@@ -647,8 +647,7 @@ IntelRealSense.Navigator = function (settings) {
     // Update the green dot to notify of a pinch
     canvas.addEventListener('realsense-pinch', function () {
       updateHandVisual(50, 'rgba(255, 255, 0, 0.4)', 'rgba(255, 255, 0, 0.0)');
-
-
+      console.log('pinching');
 	  // Start scrolling, need to latch hand position to screen
       isPinching = true;
       firstPinchFrame = true;
@@ -658,7 +657,8 @@ IntelRealSense.Navigator = function (settings) {
     canvas.addEventListener('realsense-unpinch', function () {
       updateHandVisual(50, 'rgba(255, 0, 0, 0.4)', 'rgba(255, 0, 0, 0.0)');
       isPinching = false;
-      // Release scrolling and dampen
+      console.log('un-pinching');
+	  // Release scrolling and dampen
     });
 
     var updateHandVisual = function (scale, colorStopOne, colorStopTwo) {
@@ -706,7 +706,7 @@ IntelRealSense.Navigator = function (settings) {
   };
 
   //Catch page close, refresh case in order to end the session appropriately
-  $(window).bind("beforeunload", function (e) {
+  $(window).bind("onbeforeunload", function (e) {
   if (sense != undefined) {
 	sense.Close();
 	setTimeout(function () { }, 2000);
@@ -923,9 +923,6 @@ IntelRealSense.Navigator = function (settings) {
   voice.onSpeechEnd = fireSpeechEvent.bind(null, 'realsense-speech-end');
   voice.onRecognitionAborted = fireSpeechEvent.bind(null, 'realsense-speech-recognition-aborted');
   voice.onRecognitionEnd = fireSpeechEvent.bind(null, 'realsense-speech-recognition-end');
-
-
-
 
   // Entry point for setup
   self.init = function () {
