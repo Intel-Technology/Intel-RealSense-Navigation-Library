@@ -1,4 +1,4 @@
-# Intel-RealSense-Navigation-Library
+﻿# Intel-RealSense-Navigation-Library
 
 **About the library**
 
@@ -10,13 +10,13 @@ This Library is aimed at assisting and easing integration or Intel® RealSense�
 -	Use Gestures to interact with hyperlinks and other page elements
 
 **Dependencies:**
+-	You must copy the realsensejs file from the SDK samples common folder and place it in your project. 
 -	[DCM version 1.2.14.24922](http://registrationcenter-download.intel.com/akdlm/irc_nas/5105/intel_rs_dcm_f200_1.2.14.24922.exe)
 -	[SDK Runtime version 5.0.3.191742](http://registrationcenter-download.intel.com/akdlm/irc_nas/7640/intel_rs_sdk_runtime_foodnetwork_5.0.3.191742.exe  )
 -	Note: This is based on early versions of the Intel® RealSense™ experience for Web browsers, and may be subject to change before final release. 
 
 
 **Sample todo:**
--	Voice recognition to scroll the page up or down (in progress)
 -	Voice recognition to play and pause a video (in progress)
 -	Voice recognition to open a hyperlink (in progress)
 
