@@ -10,8 +10,11 @@ This Library is aimed at assisting and easing integration or IntelÂ® RealSenseâ„
 -	Use Gestures to interact with hyperlinks and other page elements
 
 **Dependencies:**
+<<<<<<< HEAD
 -	[DCM version 1.4.27.32425](http://registrationcenter-download.intel.com/akdlm/irc_nas/7787/intel_rs_dcm_f200_1.4.27.32425.exe)
 -	[SDK Runtime version 6.0.21.6598 or newer](https://software.intel.com/en-us/realsense/webapp_setup_v6.exe)
+-	You must copy the realsense.js file from the SDK framework/common/JavaScript folder and place it in your project. 
+
 
 **Sample todo:**
 -	Voice recognition to play and pause a video (in progress)

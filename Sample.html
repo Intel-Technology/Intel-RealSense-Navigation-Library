@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- saved from url=(0025)http://illumin8games.com/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<script src="./JS/promise-1.0.0.min.js"></script>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Web Navigator</title>
 <script src="./JS/realsense.js"></script>
-<script src="./JS/realsensebase.js"></script>
-<script src="./JS/realsenseinfo.js"></script>
 <script src="./JS/realsense-navigator.js"></script>
-<script src="./JS/autobahn.min.jgz"></script>
+<script src="https://www.promisejs.org/polyfills/promise-6.1.0.js"></script>
+<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <link rel="stylesheet" href="css/intel-realsense-navigator.css">
 
 <style type="text/css">
@@ -48,35 +48,31 @@ document.addEventListener('DOMContentLoaded', function () {
   self.CompatibilityCheck();
 });
 
-  self.CompatibilityCheck = function(){
+self.CompatibilityCheck = function () {
     UpdateText("Checking  Compatibility.");
     //check platform compatibility
-    RealSenseInfo(['hand', 'voice', 'nuance_en_us_cnc'], function (info) {
-      if (info.isDCMF200Ready && info.isRuntimeInstalled) {
-	    UpdateText("Platform supports Intel(R) RealSense(TM) SDK feature");
-		self.preparerealsenseexperience();
-	  } else {
-	    if (info.isCheckNeeded) {
-	      UpdateText("Check platform readiness for Intel(R) RealSense(TM) SDK");
-	  	  } else {
-		    if (!isCameraF200 && !info.isDCMF200Ready) {
-			  UpdateText("Application cannot run because Intel(R) RealSense(TM) 3D F200 camera is not available");
-		    }
-		    if (isCameraF200 &&!info.isDCMF200Ready) {
-			  UpdateText("Please upgrade RealSense(TM) F200 Depth Camera Manager (DCM) and firmware before running the application");
-		    }
-		    if (!info.isRuntimeInstalled) {
-			  UpdateText("Please download and install Intel(R) RealSense(TM) SDK Runtime before running the application");
-		    }
-		  }
-	  }
-    })
-  };
+    intel.realsense.SenseManager.detectPlatform(['hand', 'voice', 'nuance_en_us_cnc'], []).then(function (info) {
+        if (info.nextStep == 'ready') {
+            UpdateText("Platform supports Intel(R) RealSense(TM) SDK feature");
+            self.preparerealsenseexperience();
+        }
+        else if (info.nextStep == 'unsupported') {
+            UpdateText("Check platform readiness for Intel(R) RealSense(TM) SDK");
+        }
+        else if (info.nextStep == 'driver') {
+            UpdateText("Please upgrade RealSense(TM) F200 Depth Camera Manager (DCM) and firmware before running the application");
+        }
+        else if (info.nextStep == 'runtime') {
+            UpdateText("Please download and install Intel(R) RealSense(TM) SDK Runtime before running the application");
+        }
+    });
+}
+    
 
   //Check to see if we are on the target platform. This can be modified to support a wider range
   //but please ensure that you validate on the target browsers before shipping.
   self.supported = function (){
-    UpdateText("Checking  Platform");
+    UpdateText("Checking Platform");
     //check if we are on a Windows platform
 	if(check(/windows|win32/)){
 	  //Check if browser is Internet explorer 11 or above
@@ -89,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	  }
 	  //Check if browser is Firefox
 	  else if (navigator.userAgent.search("Firefox") >= 0) {
-	    alert("Browser is FireFox");
+	    alert("Browser is Firefox");
 	  }
 	  else {
 	    alert('Please update/install and re-run the sample on a supported browser');

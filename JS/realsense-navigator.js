@@ -18,7 +18,6 @@ Authors:
   Joe Olivas <joseph.k.olivas@intel.com>
   Bryan Mackenzie <bryan.a.mackenzie@intel.com>
   Praful Mangalath <praful.mangalath@intel.com>
-
 **/
 
 "use strict";
@@ -50,7 +49,7 @@ IntelRealSense.Gestures = function (options) {
   var handId = -1;
 
   // left or right hand
-  var bodySide = pxcmConst.PXCMHandData.BODY_SIDE_UNKNOWN;
+  var bodySide = intel.realsense.hand.BodySideType.BODY_SIDE_UNKNOWN;
 
   // Defaults for the hover feature
   var resolutionWidth = 640;
@@ -108,12 +107,12 @@ IntelRealSense.Gestures = function (options) {
     {
       newValues.x = lastValues.x + alpha * (lastHandPositionImage.x - lastValues.x);
       newValues.y = lastValues.y + alpha * (lastHandPositionImage.y - lastValues.y);
-      newValues.z = lastValues.z + alpha * (lastHandPosition[pxcmConst.PXCMHandData.JOINT_CENTER].positionWorld.z - lastValues.z);
+      newValues.z = lastValues.z + alpha * (lastHandPosition[intel.realsense.hand.JointType.JOINT_CENTER].positionWorld.z - lastValues.z);
     }
     else
     {
       newValues = lastHandPositionImage;
-      newValues.z = lastHandPosition[pxcmConst.PXCMHandData.JOINT_CENTER].positionWorld.z;
+      newValues.z = lastHandPosition[intel.realsense.hand.JointType.JOINT_CENTER].positionWorld.z;
     }
     lastValues = newValues;
     return lastValues;
@@ -192,11 +191,11 @@ IntelRealSense.Gestures = function (options) {
     if(handPositions[0] && handPositions.length == handPositionLimit)
     {
       var lastPosition = handPositions[handPositions.length -1];
-      var pinky = lastPosition[pxcmConst.PXCMHandData.JOINT_PINKY_TIP].positionWorld;
-      var ring = lastPosition[pxcmConst.PXCMHandData.JOINT_RING_TIP].positionWorld;
-      var middle = lastPosition[pxcmConst.PXCMHandData.JOINT_MIDDLE_TIP].positionWorld;
-      var index = lastPosition[pxcmConst.PXCMHandData.JOINT_INDEX_TIP].positionWorld;
-      var thumb = lastPosition[pxcmConst.PXCMHandData.JOINT_THUMB_TIP].positionWorld;
+      var pinky = lastPosition[intel.realsense.hand.JointType.JOINT_PINKY_TIP].positionWorld;
+      var ring = lastPosition[intel.realsense.hand.JointType.JOINT_RING_TIP].positionWorld;
+      var middle = lastPosition[intel.realsense.hand.JointType.JOINT_MIDDLE_TIP].positionWorld;
+      var index = lastPosition[intel.realsense.hand.JointType.JOINT_INDEX_TIP].positionWorld;
+      var thumb = lastPosition[intel.realsense.hand.JointType.JOINT_THUMB_TIP].positionWorld;
 
       var fingers = [ index, middle, ring, pinky];
 
@@ -211,13 +210,13 @@ IntelRealSense.Gestures = function (options) {
   // Entry point to detect the basic navigation gestures
   this.detectGestures = function (data) {
     // First hand only
-    var joints = data.hands[0].trackedJoint;
+    var joints = data[0].trackedJoints;
     // Bail out if there are no fingers
-    if(!joints[0]) return;
+    if (!joints[0]) return;
 
     setLastHandPosition(joints);
 
-	if(data.hands[0].openness <= 0.75){
+	if(data[0].openness <= 0.75){
 		self.isEngaged = false;
 	}else{
 		self.isEngaged = true;
@@ -238,7 +237,7 @@ IntelRealSense.Gestures = function (options) {
 
   // Callback used to get hand data from the SDK
   // Also fires callbacks on gestures if necessary
-  this.onHandData = function (mid, module, data)
+  this.onHandData = function (sender, data)
   {
     // This means we have a new hand, so reset state
     if(!self.isHandActive)
@@ -249,11 +248,12 @@ IntelRealSense.Gestures = function (options) {
       unPinchCount = 0;
       pinchCount = 0;
     }
+      // retrieve hand data 
+      var allData = data.queryHandData(intel.realsense.hand.AccessOrderType.ACCESS_ORDER_NEAR_TO_FAR);
 
     // Check to see if we have hands data before anything
-    if (!data.hands) return;
-
-    self.detectGestures(data);
+    if (!allData) return;
+    self.detectGestures(allData);
 	//console.log('speed = ' + data.hands[0].trackedJoint[pxcmConst.PXCMHandData.JOINT_CENTER].speed.z.toString()); // distance from camera to stop engagement?
 
   };
@@ -262,7 +262,7 @@ IntelRealSense.Gestures = function (options) {
   var setLastHandPosition = function (joints)
   {
     lastHandPosition = joints;
-    setLastHandPositionImage(joints[pxcmConst.PXCMHandData.JOINT_CENTER].positionImage);
+    setLastHandPositionImage(joints[intel.realsense.hand.JointType.JOINT_CENTER].positionImage);
     handPositions.push(joints);
     if (handPositions.length > handPositionLimit){
       handPositions.shift();
@@ -287,10 +287,10 @@ IntelRealSense.Gestures = function (options) {
   {
     if(handPositions[0] && handPositions.length == handPositionLimit)
     {
-      var pinky = pxcmConst.PXCMHandData.JOINT_PINKY_TIP;
-      var ring = pxcmConst.PXCMHandData.JOINT_RING_TIP;
-      var middle = pxcmConst.PXCMHandData.JOINT_MIDDLE_TIP;
-      var index = pxcmConst.PXCMHandData.JOINT_INDEX_TIP;
+      var pinky = intel.realsense.hand.JointType.JOINT_PINKY_TIP;
+      var ring = intel.realsense.hand.JointType.JOINT_RING_TIP;
+      var middle = intel.realsense.hand.JointType.JOINT_MIDDLE_TIP;
+      var index = intel.realsense.hand.JointType.JOINT_INDEX_TIP;
 
       var fingertips = [index, middle, ring, pinky];
 
@@ -410,38 +410,38 @@ IntelRealSense.Voice = function (args) {
   }
 
   // Callback for alerts
-  this.OnAlert = function (data) {
+  this.OnAlert = function (sender, data) {
     switch(data.data.label)
     {
-      case pxcmConst.PXCMSpeechRecognition.ALERT_VOLUME_HIGH:
+        case intel.realsense.speech.AlertType.ALERT_VOLUME_HIGH:
         self.tryCallback(self.onVolumeHigh, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_VOLUME_LOW:
+        case intel.realsense.speech.AlertType.ALERT_VOLUME_LOW:
         self.tryCallback(self.onVolumeLow, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_SNR_LOW:
+        case intel.realsense.speech.AlertType.ALERT_SNR_LOW:
         self.tryCallback(self.onNoise, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_SPEECH_UNRECOGNIZABLE:
+      case intel.realsense.speech.AlertType.ALERT_SPEECH_UNRECOGNIZABLE:
         self.tryCallback(self.onUnrecognizedSpeech, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_SPEECH_BEGIN:
+      case intel.realsense.speech.AlertType.ALERT_SPEECH_BEGIN:
         self.tryCallback(self.onSpeechBegin, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_SPEECH_END:
+      case intel.realsense.speech.AlertType.ALERT_SPEECH_END:
         self.tryCallback(self.onSpeechEnd, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_RECOGNITION_ABORTED:
+      case intel.realsense.speech.AlertType.ALERT_RECOGNITION_ABORTED:
         self.tryCallback(self.onRecognitionAborted, 0);
         break;
-      case pxcmConst.PXCMSpeechRecognition.ALERT_RECOGNITION_END:
+      case intel.realsense.speech.AlertType.ALERT_RECOGNITION_END:
         self.tryCallback(self.onRecognitionEnd, 0);
         break;
     }
   }
 
   // Return the recognized phrase on callback
-  this.OnRecognition = function (data) {
+  this.OnRecognition = function (sender, data) {
     var res = data.data.scores[0];
     if (res.confidence < 47) return;
     if (res.label <= 18)
@@ -464,7 +464,6 @@ IntelRealSense.Navigator = function (settings) {
   var bottomTrigger = null;
 
   // RealSense setup stuff
-  var session;
   var speech_rec;
   var sense;
   var mode;
@@ -716,7 +715,6 @@ IntelRealSense.Navigator = function (settings) {
         var callback = ui[j].callback;
         elem.addEventListener(event, callback);
       }
-
     }
   };
 
@@ -775,26 +773,6 @@ IntelRealSense.Navigator = function (settings) {
       clearCanvas();
     }
   }
-  /*
-  // Try to fire the hover event if there a collision detected
-  var tryFireHover = function (element) {
-    //check if hand position is contain inside the dom object rect
-    var rect = element.getBoundingClientRect();
-
-    if (pointRectangleIntersection(screenCoordinates, rect)) {
-      element.classList.add('intel-realsense-active');
-      var event = createEvent('realsense-hover');
-      element.dispatchEvent(event);
-    } else {
-      // Fire the unhover event if needed
-      if (element.classList.contains('intel-realsense-active')) {
-        var event = createEvent('realsense-unhover');
-        element.dispatchEvent(event);
-        element.classList.remove('intel-realsense-active');
-      }
-    }
-  };
-  */
 
   // Try to fire the hover event if there a collision detected
   var tryFireHover = function (element) {
@@ -882,7 +860,6 @@ IntelRealSense.Navigator = function (settings) {
       // Always send to the canvas, too
       var event = createEvent(eventName, screenCoordinates);
       canvas.dispatchEvent(event);
-
     }
   }
 
@@ -924,73 +901,76 @@ IntelRealSense.Navigator = function (settings) {
 
   // Entry point for setup
   self.init = function () {
-    createNavigationElements();
-    setupEventHandlers();
-    resizeCanvas();
-    updateDocumentHeight();
-    updateViewportHeight();
+      createNavigationElements();
+      setupEventHandlers();
+      resizeCanvas();
+      updateDocumentHeight();
+      updateViewportHeight();
 
-    PXCMSession_CreateInstance().then(function (result) {
-      session = result;
-      console.log('Initializing');
-      return session.CreateImpl(undefined, undefined, pxcmConst.PXCMSpeechRecognition.CUID);
-    }).then(function (result) {
-      console.log('Generating commands');
-      speech_rec = result;
-      mode = Number(1);
-      var voice_commands = voice.getVoiceCommands();
-      return speech_rec.BuildGrammarFromStringList(mode, voice_commands.commands, voice_commands.command_idx, null);
-    }).then(function (result) {
-      return speech_rec.SetGrammar(mode);
-    }).then(function (result) {
-      console.log('Grammar created');
-      return speech_rec.StartRec(voice.OnRecognition, voice.OnAlert);
-    }).then(function (result) {
-      console.log('Started Speech');
-    }).then(function (result) {
-      return session.CreateImpl(undefined, undefined, pxcmConst.PXCMSenseManager.CUID);
-    }).then(function (result) {
-      console.log('Enabling Hands');
-      sense = result;
-      return sense.EnableHand(gesture.onHandData);
-    }).then(function (result) {
-      console.log('Init started');
-      handModule = result;
-      return sense.Init(function () {}, function () {});
-    }).then(function (result) {
-      console.log('hand config');
-      return handModule.CreateActiveConfiguration();
-    }).then(function (result) {
-      handConfiguration = result;
-      console.log('disabling alerts');
-      return handConfiguration.DisableAllAlerts();
-    }).then(function (result) {
-      console.log('disabling gestures');
-      return handConfiguration.DisableAllGestures();
-    }).then(function (result) {
-      console.log('applying changes');
-      return handConfiguration.ApplyChanges();
-    }).then(function (result) {
-      console.log('query capture manager');
-      return sense.QueryCaptureManager();
-    }).then(function (result) {
-      console.log('query image size');
-      capture = result;
-      return capture.QueryImageSize(pxcmConst.PXCMCapture.STREAM_TYPE_DEPTH);
-    }).then(function (result) {
-      console.log('stream frames');
-      imageSize = result.size;
-      var ret = sense.StreamFrames();
-      return ret;
-    }).then(function (result) {
-      console.log('Streaming ' + imageSize.width + 'x' + imageSize.height);
-      gesture.setResolution(imageSize);
-      resetCanvasRatio();
-    }).catch(function (error) {
-      console.log('RealSense setup failed: ' + JSON.stringify(error));
-    });
+      intel.realsense.SenseManager.createInstance().then(function (result) {
+          console.log('hand actvating');
+          sense = result;
+          return intel.realsense.hand.HandModule.activate(sense);
+      }).then(function (result) {
+          console.log('setting handlers');
+          handModule = result;
+          // Set the on connect handler
+          sense.onDeviceConnected = null;
+          // Set the status handler
+          sense.onStatusChanged = null;
+          // Set the data handler
+          handModule.onFrameProcessed = gesture.onHandData;
+          // SenseManager Initialization
+          return sense.init();
+      }).then(function (result) {
+          console.log('creating config');
+          // Configure Hand Tracking
+          return handModule.createActiveConfiguration();
+      }).then(function (result) {
+          console.log('hand config');
+          handConfiguration = result;
+          // Enable all alerts
+          handConfiguration.allAlerts = false;
+          // Enable all gestures
+          handConfiguration.allGestures = false;
+          // Apply Hand Configuration changes
+          return handConfiguration.applyChanges();
+      }).then(function (result) {
+          console.log('releasing hand config');
+          return handConfiguration.release();
+      }).then(function (result) {
+          console.log('stream frames');
+          // Query image size 
+          imageSize = sense.captureManager.queryImageSize(intel.realsense.StreamType.STREAM_TYPE_DEPTH);
+          // Start Streaming
+          return sense.streamFrames();
+      }).then(function (result) {
+          console.log('Streaming ' + imageSize.width + 'x' + imageSize.height);
+          gesture.setResolution(imageSize);
+          resetCanvasRatio();
+      }).then(function (result) {
+          return intel.realsense.speech.SpeechRecognition.createInstance(sense);
+      }).then(function (result) {
+          console.log('Generating commands');
+          speech_rec = result;
+          var voice_commands = voice.getVoiceCommands();
+          var res = speech_rec.buildGrammarFromStringList(1, voice_commands.commands, voice_commands.command_idx);
+          return res;
+      }).then(function (result) {
+          console.log('set Grammar');
+          return speech_rec.setGrammar(1);
+      }).then(function (result) {
+          console.log('Grammar created');
+          speech_rec.onSpeechRecognized = voice.OnRecognition;
+          speech_rec.onAlertFired = voice.OnAlert;
+          return speech_rec.startRec();
+      }).then(function (result) {
+          console.log('Started speech');
+      }).catch(function (error) {
+          // handle pipeline initialization errors
+          console.log('RealSense setup failed: ' + JSON.stringify(error));
+      });
   };
-
   self.startNavigation = function () {
     draw();
   }
